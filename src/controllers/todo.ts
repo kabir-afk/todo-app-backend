@@ -35,6 +35,23 @@ async function updateTask(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
+async function editTask(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = req.params.id;
+    const { todo } = req.body;
+    const task = await TASK.findById(id);
+    if (!task) return next(new ErrorHandler(404, "Task not found"));
+    task.todo = todo;
+    await task.save();
+    return res.status(200).json({
+      success: true,
+      message: "Task updated successfully",
+      task,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 async function deleteTask(req: Request, res: Response, next: NextFunction) {
   try {
     const id = req.params.id;
@@ -46,4 +63,4 @@ async function deleteTask(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export { newTask, getUserTask, updateTask, deleteTask };
+export { newTask, getUserTask, editTask, updateTask, deleteTask };
