@@ -54,15 +54,15 @@ async function login(req: Request, res: Response, next: NextFunction) {
 }
 
 async function logout(req: Request, res: Response) {
-  res
-    .status(200)
-    .cookie("token", "", {
-      httpOnly: true,
-      maxAge: 15 * 60 * 1000,
-      sameSite: env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
-      secure: env.NODE_ENV === "DEVELOPMENT" ? false : true,
-    })
-    .json({ success: true, message: "Cookie deleted successfully" });
+  res.clearCookie("token", {
+    sameSite: env.NODE_ENV === "DEVELOPMENT" ? "lax" : "none",
+    secure: env.NODE_ENV === "DEVELOPMENT" ? false : true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
 }
 
 export { getAllUsers, register, getMyProfile, login, logout };
