@@ -14,7 +14,8 @@ async function isAuthenticated(
 ) {
   try {
     const token = req.cookies.token;
-    if (!token) res.json({ success: false, Message: "You are not logged in" });
+    if (!token)
+      return res.json({ success: false, Message: "You are not logged in" });
 
     const decoded = jwt.verify(token, env.JWT_SECRET_KEY) as JwtPayload;
 
