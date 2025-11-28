@@ -3,12 +3,9 @@ import TASK from "../models/todo.js";
 import { type Response, type Request, type NextFunction } from "express";
 async function newTask(req: Request, res: Response, next: NextFunction) {
   try {
-    const { title, description } = req.body;
-    if (!title || !description)
-      return next(new ErrorHandler(400, "All fields are required"));
+    const { todo } = req.body;
     const task = await TASK.create({
-      title,
-      description,
+      todo,
       user: req.user._id,
     });
     return res.status(201).json({ message: "Task created successfully", task });
