@@ -1,18 +1,13 @@
 import mongoose from "mongoose";
 
 interface ITask {
-  title: string;
-  description: string;
+  todo: string;
   isCompleted: boolean;
   user: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 const taskSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
+  todo: {
     type: String,
     required: true,
   },
