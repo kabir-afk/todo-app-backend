@@ -6,7 +6,7 @@ import cors from "cors";
 import userRoute from "./routes/user.js";
 import taskRoute from "./routes/todo.js";
 import { isAuthenticated } from "./middleware/auth.js";
-import { errorMiddleware } from "./middleware/error.js";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -29,8 +29,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/tasks", isAuthenticated, taskRoute);
-
-app.use(errorMiddleware);
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 mongoose
   .connect(env.MONGO_URI)
