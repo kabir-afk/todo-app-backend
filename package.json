@@ -20,6 +20,7 @@
   "homepage": "https://github.com/kabir-afk/todo-app-backend#readme",
   "description": "",
   "dependencies": {
+    "@types/nodemailer": "^7.0.4",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -27,7 +28,8 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^7.0.0",
-    "mongoose": "^9.0.0"
+    "mongoose": "^9.0.0",
+    "nodemailer": "^7.0.11"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
