@@ -6,18 +6,23 @@ export class ErrorLogger {
     try {
       const sanitizedBody = this.sanitizeData(req.body);
 
-      await ErrorLog.create({
+      const errorData: any = {
         errorMessage: error.message,
-        errorStack: error.stack,
         statusCode,
         method: req.method,
         url: req.originalUrl || req.url,
-        userId: (req as any).user?.id || (req as any).user?._id, // If auth middleware adds user
+        userId: (req as any).user?.id || (req as any).user?._id,
         requestBody: sanitizedBody,
         requestParams: req.params,
         requestQuery: req.query,
         resolved: false,
-      });
+      };
+
+      if (error.stack) {
+        errorData.errorStack = error.stack;
+      }
+
+      await ErrorLog.create(errorData);
 
       console.error("Error logged to database:", {
         message: error.message,

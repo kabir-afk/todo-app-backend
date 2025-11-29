@@ -1,13 +1,15 @@
 import jwt from "jsonwebtoken";
 import { type Response } from "express";
 import { env } from "../../config/env.js";
+import { type ObjectId } from "mongoose";
 
 interface IUser {
-  _id: string;
+  _id: string | ObjectId;
 }
 
 function sendCookie(res: Response, user: IUser, message: string) {
-  const token = jwt.sign({ _id: user._id }, env.JWT_SECRET_KEY!);
+  const userId = typeof user._id === "string" ? user._id : user._id.toString();
+  const token = jwt.sign({ _id: userId }, env.JWT_SECRET_KEY!);
 
   res
     .status(201)

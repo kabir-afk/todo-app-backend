@@ -7,6 +7,14 @@ interface JwtPayload {
   _id: string;
 }
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
+
 async function isAuthenticated(
   req: Request,
   res: Response,

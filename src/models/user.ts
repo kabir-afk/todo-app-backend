@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { type ObjectId } from "mongoose";
 
 interface IUser {
+  _id: ObjectId;
   name: string;
   email: string;
   password: string;

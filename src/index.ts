@@ -33,7 +33,9 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 mongoose
-  .connect(env.MONGO_URI)
+  .connect(env.MONGO_URI, {
+    dbName: "todo-app",
+  })
   .then((c) => console.log(`MongoDB Connected with ${c.connection.host}`))
   .catch((error) => console.log("Error:", error));
 
