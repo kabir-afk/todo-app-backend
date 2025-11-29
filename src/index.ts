@@ -14,13 +14,34 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [env.FRONTEND_URI],
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true,
-  })
-);
+// CORS setup: allow the frontend origin(s). Use a dynamic whitelist so
+// we can control allowed origins via environment variables.
+// Include Vite's default dev origin so `http://localhost:5173` requests are allowed
+const allowedOrigins = [
+  env.FRONTEND_URI,
+  "http://localhost:3000",
+  "http://localhost:5173",
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => {
+    // Allow requests with no origin (like mobile apps or curl/postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+  },
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+// Ensure preflight requests are handled
+app.options("*", cors(corsOptions));
+// Helpful runtime log to verify configured origins (visible in server logs)
+console.log("CORS allowed origins:", allowedOrigins);
 
 // Routes
 app.get("/", (req, res) => {
