@@ -1,0 +1,73 @@
+import { AppError } from "../middleware/errorHandler.js";
+import TASK from "../models/todo.js";
+import {} from "express";
+async function newTask(req, res, next) {
+    try {
+        const { todo } = req.body;
+        const task = await TASK.create({
+            todo,
+            user: req.user._id,
+        });
+        return res.status(201).json({ message: "Task created successfully", task });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function getUserTask(req, res, next) {
+    try {
+        const userId = req.user._id;
+        const task = await TASK.find({ user: userId });
+        res.status(200).json({ success: true, task });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function updateTask(req, res, next) {
+    try {
+        const id = req.params.id;
+        const task = await TASK.findById(id);
+        if (!task)
+            return next(new AppError("Task not found", 404));
+        task.isCompleted = !task.isCompleted;
+        await task.save();
+        return res.status(202).json({ message: "Updated successfully" });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function editTask(req, res, next) {
+    try {
+        const id = req.params.id;
+        const { todo } = req.body;
+        const task = await TASK.findById(id);
+        if (!task)
+            return next(new AppError("Task not found", 404));
+        task.todo = todo;
+        await task.save();
+        return res.status(200).json({
+            success: true,
+            message: "Task updated successfully",
+            task,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+async function deleteTask(req, res, next) {
+    try {
+        const id = req.params.id;
+        const task = await TASK.findByIdAndDelete(id);
+        if (!task)
+            return next(new AppError("Task not found", 404));
+        return res.status(202).json({ message: "Deleted successfully" });
+    }
+    catch (error) {
+        next(error);
+    }
+}
+export { newTask, getUserTask, editTask, updateTask, deleteTask };
+//# sourceMappingURL=todo.js.map
