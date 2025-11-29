@@ -1,4 +1,4 @@
-import { ErrorHandler } from "../middleware/error.js";
+import { AppError } from "../middleware/errorHandler.js";
 import TASK from "../models/todo.js";
 import { type Response, type Request, type NextFunction } from "express";
 async function newTask(req: Request, res: Response, next: NextFunction) {
@@ -27,7 +27,7 @@ async function updateTask(req: Request, res: Response, next: NextFunction) {
   try {
     const id = req.params.id;
     const task = await TASK.findById(id);
-    if (!task) return next(new ErrorHandler(404, "Task not found"));
+    if (!task) return next(new AppError("Task not found", 404));
     task.isCompleted = !task.isCompleted;
     await task.save();
     return res.status(202).json({ message: "Updated successfully" });
@@ -40,7 +40,7 @@ async function editTask(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     const { todo } = req.body;
     const task = await TASK.findById(id);
-    if (!task) return next(new ErrorHandler(404, "Task not found"));
+    if (!task) return next(new AppError("Task not found", 404));
     task.todo = todo;
     await task.save();
     return res.status(200).json({
@@ -56,7 +56,7 @@ async function deleteTask(req: Request, res: Response, next: NextFunction) {
   try {
     const id = req.params.id;
     const task = await TASK.findByIdAndDelete(id);
-    if (!task) return next(new ErrorHandler(404, "Task not found"));
+    if (!task) return next(new AppError("Task not found", 404));
     return res.status(202).json({ message: "Deleted successfully" });
   } catch (error) {
     next(error);
